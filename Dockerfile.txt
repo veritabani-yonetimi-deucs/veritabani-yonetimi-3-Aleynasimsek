@@ -1,0 +1,40 @@
+# Build stage
+ARG TAG
+FROM cs50/cli:${TAG} AS builder
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Unset user
+USER root
+ARG DEBIAN_FRONTEND=noninteractive
+
+# SQL ve Sistem Araçlarını Kur
+RUN apt update && \
+    apt install --no-install-recommends --no-install-suggests --yes \
+        acl \
+        jq \
+        wget \
+        mysql-client \
+        postgresql \
+        postgresql-contrib \
+        sqlite3 && \
+    apt clean
+
+# Install GitHub CLI (Ödev teslimi için)
+RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+&& wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+&& sudo apt update \
+&& sudo apt install gh -y
+
+# Copy files to image
+COPY ./etc /etc
+# Not: Eğer etc klasörünüz yoksa aşağıdaki COPY satırı hata verir. 
+# Eğer özel yapılandırma dosyanız yoksa bu satırı silebilirsiniz.
+
+# Enforce login shell
+RUN echo "\nshopt -q login_shell || exec bash --login -i" >> /etc/bash.bashrc
+
+# Set user
+USER ubuntu

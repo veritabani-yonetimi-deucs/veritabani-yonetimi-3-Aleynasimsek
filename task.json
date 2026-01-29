@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Ödevi Başlat",
+            "type": "shell",
+            /* Aşağıdaki komut şunları yapar:
+               1. code README.md -> Yönerge dosyasını açar.
+               2. code 1.sql -> 1. soruyu açar.
+               Not: VS Code terminalinde 'code' komutu dosya açmaya yarar.
+            */
+            "command": "code README.md && code 1.sql",
+            "windows": {
+                "command": "code README.md; code 1.sql"
+            },
+            "presentation": {
+                "reveal": "silent",   /* Terminal penceresini öğrencinin gözüne sokma */
+                "panel": "hidden"     /* Paneli gizli tut */
+            },
+            "runOptions": {
+                "runOn": "folderOpen" /* BU KISIM ÇOK ÖNEMLİ: Klasör açılır açılmaz çalıştırır */
+            }
+        }
+    ]
+}
